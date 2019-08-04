@@ -11,8 +11,6 @@ namespace SmileDetectorTestTask
     {
         public RawImage _webCamRawImage;
         [SerializeField] [Range(3.0f, 10.0f)] private float _waitBeforeNextShot = 4f;
-        [SerializeField] private Animator _reactionCharAnim;
-        private int _animSmileTrigger = Animator.StringToHash("SmileDetected");
         private WebCamTexture _webCamTexture;
         private PhotoSender _photoSender;
         
@@ -20,6 +18,9 @@ namespace SmileDetectorTestTask
         private void Awake()
         {
             _photoSender = GetComponent<PhotoSender>();
+        }
+        private void OnDisable() {
+            StopCoroutine(MakeNextShot());
         }
 
         private void Start()

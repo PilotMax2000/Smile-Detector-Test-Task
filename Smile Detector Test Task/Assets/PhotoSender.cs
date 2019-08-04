@@ -10,6 +10,7 @@ namespace SmileDetectorTestTask
     {
 
         [SerializeField] private MainUI _mainUI;
+         [SerializeField] private SmileHandler _smileHandler;
         private const string SUBSCRIPTION_KEY = "53db09b4f6df468eadb20a52b7de7d5c";
         private const string BASE_URL =     "https://northeurope.api.cognitive.microsoft.com/face/v1.0/detect";
         private const string REQUEST_PARAMS = "?returnFaceAttributes=smile&recognitionModel=recognition_01&detectionModel=detection_01";
@@ -30,8 +31,7 @@ namespace SmileDetectorTestTask
             string json = FormatJsonResult(data);
             if (string.IsNullOrEmpty(json))
             {
-                Debug.Log("Face on photo was not detected");
-                _mainUI.ShowMessage(InfoMessage.Default);
+                _smileHandler.CheckSmileThreshold(-1);
                 return;
             }
             else
@@ -39,12 +39,10 @@ namespace SmileDetectorTestTask
                 FaceDetectionData faceData = JsonUtility.FromJson<FaceDetectionData>(json);
                 if (faceData != null)
                 {
-                    _mainUI.ShowSmileDetectionResult(faceData.faceAttributes.smile);
-                    Debug.Log(faceData.faceAttributes.smile);
+                    _smileHandler.CheckSmileThreshold(faceData.faceAttributes.smile);
                 }
                 else
                 {
-                    _mainUI.ShowMessage("Problem with parsing the results!");
                     Debug.LogWarning("Problem with parsing the results!");
                 }
             }

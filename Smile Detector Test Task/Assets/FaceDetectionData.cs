@@ -12,7 +12,7 @@ namespace SmileDetectorTestTask
     [System.Serializable]
     public class FaceAttributes
     {
-        public double smile;
+        public float smile;
     }
 
     [System.Serializable]
