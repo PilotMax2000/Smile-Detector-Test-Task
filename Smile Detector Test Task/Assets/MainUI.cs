@@ -6,17 +6,8 @@ using TMPro;
 public class MainUI : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI _statusText;
+    [SerializeField] private string _defaultMessage = "Smile and wait!";
     // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
     public void ShowSmileDetectionResult(double smileValue )
     {
@@ -34,4 +25,16 @@ public class MainUI : MonoBehaviour
     {
         _statusText.text = message;
     }
+
+    public void ShowMessage(InfoMessage m)
+    {
+        switch(m)
+        {
+            case InfoMessage.Default:
+                _statusText.text = _defaultMessage;
+                break;
+        }
+    }
 }
+
+public enum InfoMessage {Default}

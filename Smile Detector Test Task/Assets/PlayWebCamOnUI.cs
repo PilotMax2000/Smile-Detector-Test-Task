@@ -12,6 +12,7 @@ namespace SmileDetectorTestTask
         public RawImage _webCamRawImage;
         private WebCamTexture _webCamTexture;
         private PhotoSender _photoSender;
+        [SerializeField] [Range(3.0f, 10.0f)] private float _waitBeforeNextShot = 4f;
 
         private void Awake()
         {
@@ -24,22 +25,40 @@ namespace SmileDetectorTestTask
             _webCamRawImage.texture = _webCamTexture;
             _webCamRawImage.material.mainTexture = _webCamTexture;
             _webCamTexture.Play();
+            
+            StartCoroutine(MakeNextShot());
+
+        }
+
+        IEnumerator MakeNextShot()
+        {
+            while (true)
+            {
+                yield return new WaitForSeconds(_waitBeforeNextShot);
+                SendPhotoToServer();
+            }
+
         }
 
         private void Update()
         {
-            if (Input.GetMouseButtonDown(0))
-            {
-                //SaveImage();
+            // if (Input.GetMouseButtonDown(0))
+            // {
+            //SaveImage();
 
-                Texture2D texture = new Texture2D(_webCamRawImage.texture.width, _webCamRawImage.texture.height, TextureFormat.ARGB32, false);
 
-                texture.SetPixels(_webCamTexture.GetPixels());
-                texture.Apply();
+            //}
+        }
 
-                byte[] bytes = texture.EncodeToPNG();
-                _photoSender.SendPhotoToServer(bytes);
-            }
+        private void SendPhotoToServer()
+        {
+            Texture2D texture = new Texture2D(_webCamRawImage.texture.width, _webCamRawImage.texture.height, TextureFormat.ARGB32, false);
+
+            texture.SetPixels(_webCamTexture.GetPixels());
+            texture.Apply();
+
+            byte[] bytes = texture.EncodeToPNG();
+            _photoSender.SendPhotoToServer(bytes);
         }
 
         private void SaveImage()
