@@ -10,9 +10,12 @@ namespace SmileDetectorTestTask
     public class PlayWebCamOnUI : MonoBehaviour
     {
         public RawImage _webCamRawImage;
+        [SerializeField] [Range(3.0f, 10.0f)] private float _waitBeforeNextShot = 4f;
+        [SerializeField] private Animator _reactionCharAnim;
+        private int _animSmileTrigger = Animator.StringToHash("SmileDetected");
         private WebCamTexture _webCamTexture;
         private PhotoSender _photoSender;
-        [SerializeField] [Range(3.0f, 10.0f)] private float _waitBeforeNextShot = 4f;
+        
 
         private void Awake()
         {
