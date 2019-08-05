@@ -19,7 +19,7 @@ namespace SmileDetectorTestTask
         {
             _photoSender = GetComponent<PhotoSender>();
         }
-        private void OnDisable() {
+        private void OnApplicationQuit() {
             StopCoroutine(MakeNextShot());
         }
 
