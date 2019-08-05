@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine.Networking;
 using UnityEngine;
 using System;
@@ -8,7 +7,7 @@ namespace SmileDetectorTestTask
 {
     public class PhotoSender : MonoBehaviour
     {
-        
+
 #pragma warning disable 0649
         [SerializeField] private SmileHandler _smileHandler;
 #pragma warning restore 0649
@@ -16,18 +15,12 @@ namespace SmileDetectorTestTask
         private const string BASE_URL = "https://northeurope.api.cognitive.microsoft.com/face/v1.0/detect";
         private const string REQUEST_PARAMS = "?returnFaceAttributes=smile&recognitionModel=recognition_01&detectionModel=detection_01";
 
-
-        private void Start()
-        {
-
-        }
-
         public void SendPhotoToServer(byte[] photo)
         {
             StartCoroutine(SendPhoto(BASE_URL + REQUEST_PARAMS, photo, FaceDataParser));
         }
 
-        private void FaceDataParser(byte[] data)
+        private void FaceDataParser(byte[] data, byte[] photo)
         {
             string json = FormatJsonResult(data);
             if (string.IsNullOrEmpty(json))
@@ -40,7 +33,7 @@ namespace SmileDetectorTestTask
                 FaceDetectionData faceData = JsonUtility.FromJson<FaceDetectionData>(json);
                 if (faceData != null)
                 {
-                    _smileHandler.CheckSmileThreshold(faceData.faceAttributes.smile);
+                    _smileHandler.CheckSmileThreshold(faceData.faceAttributes.smile, photo);
                 }
                 else
                 {
@@ -56,10 +49,10 @@ namespace SmileDetectorTestTask
             return jsonResult;
         }
 
-        IEnumerator SendPhoto(string url, byte[] bodyBytes, Action<byte[]> ParseResults)
+        IEnumerator SendPhoto(string url, byte[] photo, Action<byte[],byte[]> callback)
         {
             var request = new UnityWebRequest(url, "POST");
-            byte[] bodyRaw = bodyBytes;
+            byte[] bodyRaw = photo;
             request.uploadHandler = (UploadHandler)new UploadHandlerRaw(bodyRaw);
             request.downloadHandler = (DownloadHandler)new DownloadHandlerBuffer();
             request.SetRequestHeader("Content-Type", "application/octet-stream");
@@ -73,7 +66,7 @@ namespace SmileDetectorTestTask
             }
             else
             {
-                ParseResults(request.downloadHandler.data);
+                callback(request.downloadHandler.data, photo);
             }
         }
     }

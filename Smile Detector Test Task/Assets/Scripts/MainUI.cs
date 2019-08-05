@@ -7,7 +7,6 @@ namespace SmileDetectorTestTask
     {
 #pragma warning disable 0649
         [SerializeField] private TextMeshProUGUI _statusText;
-        // your code
 #pragma warning restore 0649
 
         public void ShowMessage(string message)

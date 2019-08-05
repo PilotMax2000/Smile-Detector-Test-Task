@@ -1,7 +1,5 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -73,7 +71,7 @@ namespace SmileDetectorTestTask
             texture.Apply();
 
             byte[] bytes = texture.EncodeToPNG();
-
+            Directory.CreateDirectory(Application.dataPath + "/Photos");
             File.WriteAllBytes(Application.dataPath + "/Photos/testing.png", bytes);
         }
     }

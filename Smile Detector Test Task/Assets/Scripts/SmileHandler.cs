@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace SmileDetectorTestTask
@@ -21,21 +20,27 @@ namespace SmileDetectorTestTask
 #pragma warning restore 0649
         private int _animSmileTriggerHash = Animator.StringToHash("SmileDetected");
         private bool _smileDetectedSuccessfully;
+        private PhotoSaverAndLoader _photoSaverAndLoader;
 
-        public void CheckSmileThreshold(float smileValue)
+        private void Awake()
         {
-            if(_smileDetectedSuccessfully)
+            _photoSaverAndLoader = GetComponent<PhotoSaverAndLoader>();
+        }
+
+        public void CheckSmileThreshold(float smileValue, byte[] photo = null)
+        {
+            if (_smileDetectedSuccessfully)
             {
                 return;
             }
 
-            if(smileValue < 0)
+            if (smileValue < 0)
             {
                 _mainUI.ShowMessage(_smileAndWaitMessage);
             }
             else if (smileValue > _smileValueThreshold)
             {
-                SmileWasDetected();
+                SmileWasDetected(photo);
             }
             else
             {
@@ -43,12 +48,13 @@ namespace SmileDetectorTestTask
             }
         }
 
-        private void SmileWasDetected()
+        private void SmileWasDetected(byte[] photo)
         {
             _smileDetectedSuccessfully = true;
+            _photoSaverAndLoader.SavePhoto(photo);
             _webCam.SetPauseAfterSuccessSmileShot(_smileDetectedSuccessfully);
-            StartCoroutine(MakePauseAfterSuccessfulDetection());
             _reactionCharAnim.SetTrigger(_animSmileTriggerHash);
+            StartCoroutine(MakePauseAfterSuccessfulDetection());
         }
 
         private IEnumerator MakePauseAfterSuccessfulDetection()
@@ -61,7 +67,6 @@ namespace SmileDetectorTestTask
             yield return new WaitForSeconds(1.0f);
             _smileDetectedSuccessfully = false;
             _webCam.SetPauseAfterSuccessSmileShot(_smileDetectedSuccessfully);
-
         }
     }
 
