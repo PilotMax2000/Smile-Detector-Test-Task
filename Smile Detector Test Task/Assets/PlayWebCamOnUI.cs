@@ -9,18 +9,18 @@ namespace SmileDetectorTestTask
 {
     public class PlayWebCamOnUI : MonoBehaviour
     {
-        public RawImage _webCamRawImage;
+#pragma warning disable 0649
+        [SerializeField] private RawImage _webCamRawImage;
+#pragma warning restore 0649
         [SerializeField] [Range(3.0f, 10.0f)] private float _waitBeforeNextShot = 4f;
         private WebCamTexture _webCamTexture;
         private PhotoSender _photoSender;
-        
+        private bool _pause;
+
 
         private void Awake()
         {
             _photoSender = GetComponent<PhotoSender>();
-        }
-        private void OnApplicationQuit() {
-            StopCoroutine(MakeNextShot());
         }
 
         private void Start()
@@ -29,30 +29,30 @@ namespace SmileDetectorTestTask
             _webCamRawImage.texture = _webCamTexture;
             _webCamRawImage.material.mainTexture = _webCamTexture;
             _webCamTexture.Play();
-            
+
             StartCoroutine(MakeNextShot());
 
         }
 
-        IEnumerator MakeNextShot()
+        public void SetPauseAfterSuccessSmileShot(bool setPause)
         {
-            while (true)
+            _pause = setPause;
+            if(setPause == false)
+            {
+                StartCoroutine(MakeNextShot());
+            }
+        }
+
+        private IEnumerator MakeNextShot()
+        {
+            while (_pause == false)
             {
                 yield return new WaitForSeconds(_waitBeforeNextShot);
                 SendPhotoToServer();
             }
-
         }
 
-        private void Update()
-        {
-            // if (Input.GetMouseButtonDown(0))
-            // {
-            //SaveImage();
 
-
-            //}
-        }
 
         private void SendPhotoToServer()
         {
