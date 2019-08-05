@@ -15,7 +15,6 @@ namespace SmileDetectorTestTask
         private PhotoSender _photoSender;
         private bool _pause;
 
-
         private void Awake()
         {
             _photoSender = GetComponent<PhotoSender>();
@@ -50,8 +49,6 @@ namespace SmileDetectorTestTask
             }
         }
 
-
-
         private void SendPhotoToServer()
         {
             Texture2D texture = new Texture2D(_webCamRawImage.texture.width, _webCamRawImage.texture.height, TextureFormat.ARGB32, false);
@@ -61,18 +58,6 @@ namespace SmileDetectorTestTask
 
             byte[] bytes = texture.EncodeToPNG();
             _photoSender.SendPhotoToServer(bytes);
-        }
-
-        private void SaveImage()
-        {
-            Texture2D texture = new Texture2D(_webCamRawImage.texture.width, _webCamRawImage.texture.height, TextureFormat.ARGB32, false);
-
-            texture.SetPixels(_webCamTexture.GetPixels());
-            texture.Apply();
-
-            byte[] bytes = texture.EncodeToPNG();
-            Directory.CreateDirectory(Application.dataPath + "/Photos");
-            File.WriteAllBytes(Application.dataPath + "/Photos/testing.png", bytes);
         }
     }
 

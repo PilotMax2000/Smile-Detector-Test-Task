@@ -11,7 +11,7 @@ namespace SmileDetectorTestTask
         [SerializeField] private GameObject _photoPrefab;
         [SerializeField] private Transform _parent;
 #pragma warning restore 0649
-        private string[] files;
+        private string[] _files;
         private const string PHOTOS_FOLDER = "/Photos/";
 
         void Start()
@@ -20,7 +20,7 @@ namespace SmileDetectorTestTask
 
             if (Directory.Exists(path))
             {
-                files = System.IO.Directory.GetFiles(path, "*.png");
+                _files = System.IO.Directory.GetFiles(path, "*.png");
                 LoadImages();
             }
         }
@@ -29,7 +29,7 @@ namespace SmileDetectorTestTask
         {
             Texture2D tex = null;
             byte[] fileData;
-            foreach (string texPath in files)
+            foreach (string texPath in _files)
             {
 
                 if (File.Exists(texPath))
@@ -42,8 +42,8 @@ namespace SmileDetectorTestTask
                     testRaw.texture = tex;
                 }
             }
-
         }
+        
         public void SavePhoto(byte[] photo)
         {
 
